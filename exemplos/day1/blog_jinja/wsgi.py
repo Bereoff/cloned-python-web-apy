@@ -3,15 +3,15 @@ import cgi
 from database import conn
 from jinja2 import Environment, FileSystemLoader
 
-env = Environment(loader=FileSystemLoader("templates"))
+env = Environment(loader=FileSystemLoader("."))
 
 
 def add_new_post(post):
     cursor = conn.cursor()
     cursor.execute(
         """\
-            INSERT INTO post (title, content, author)    
-            VALUES (:title, :content, :author);
+        INSERT INTO post (title, content, author)
+        VALUES (:title, :content, :author);
         """,
         post,
     )
@@ -35,14 +35,12 @@ def get_posts_from_database(post_id=None):
     return [dict(zip(fields, post)) for post in results]
 
 
-def application(environ, start_reponse):
-    body = b"Content Not Found"
-    status = "404 Not Found"
-    # Processar o request
+def application(environ, start_response):
     path = environ["PATH_INFO"]
     method = environ["REQUEST_METHOD"]
+    body = b"Content Not Found"
+    status = "404 Not Found"
 
-    # Roteamento de rotas/URLs
     if path == "/" and method == "GET":
         posts = get_posts_from_database()
         body = render_template("list.template.html", post_list=posts)
@@ -62,14 +60,20 @@ def application(environ, start_reponse):
         )
         post = {item.name: item.value for item in form.list}
         add_new_post(post)
-        body = b"New post Created with Sucess!"
+        body = b"New post Created with Success!"
         status = "201 Created"
 
     elif path == "/new" and method == "GET":
         body = render_template("form.template.html")
         status = "200 OK"
 
-    # Criar o response
     headers = [("Content-type", "text/html")]
-    start_reponse(status, headers)
-    return [body]  # precisa ser um retorno iterável
+    start_response(status, headers)
+    return [body]
+
+
+if __name__ == "__main__":
+    from wsgiref.simple_server import make_server
+
+    server = make_server("0.0.0.0", 8000, application)
+    server.serve_forever()

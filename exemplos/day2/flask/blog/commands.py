@@ -1,6 +1,7 @@
 import click
 from blog.posts import (get_all_posts, get_post_by_slug, new_post,
                         update_by_slug)
+from flask import Flask
 
 
 @click.group()
@@ -57,5 +58,5 @@ def update(slug, content, published):
 # Todo - deletar ou despublicar um post
 
 
-def configure(app):
+def configure(app: Flask):
     app.cli.add_command(post)

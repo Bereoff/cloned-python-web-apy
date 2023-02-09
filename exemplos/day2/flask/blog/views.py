@@ -1,7 +1,7 @@
 from blog.posts import get_all_posts  # TODO: Criar o update posts
 from blog.posts import get_post_by_slug, new_post
 from flask import (Blueprint, Flask, abort, redirect, render_template, request,
-                   session, url_for)
+                   url_for)
 from flask_simplelogin import login_required
 
 bp = Blueprint("post", __name__, template_folder="templates")

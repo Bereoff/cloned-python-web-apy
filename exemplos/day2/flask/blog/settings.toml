@@ -8,5 +8,6 @@ extensions = [
     "blog.views:configure",
     "blog.plugins:configure",
     "blog.auth:configure",
+    "blog.admin:configure",
 ]
 secret_key = "844979424f6bc14daf72a2b394d30abf15ea23c335cdd1ddea4eccfabf35e118"
